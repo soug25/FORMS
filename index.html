@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML form to Google Sheet</title>
+    <style>
+        /* Styling the body and form container */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #00ff00; /* Bright green background */
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        input,
+        textarea,
+        select {
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        #sub {
+            background-color: black;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #sub:after {
+            content: " 📩";
+            margin-left: 5px;
+        }
+
+        #msg {
+            text-align: center;
+            color: green;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1 id="msg"></h1>
+        <form>
+            <input type="email" name="email" placeholder="Email" required>
+            <div style="display: flex; justify-content: space-between; gap: 10px;">
+                <input type="text" name="first_name" placeholder="First Name" style="flex: 1;" required>
+                <input type="text" name="last_name" placeholder="Last Name" style="flex: 1;" required>
+            </div>
+            <select name="location" required>
+                <option value="">Location (IN/US/BOTH)</option>
+                <option value="IN">IN</option>
+                <option value="US">US</option>
+                <option value="BOTH">BOTH</option>
+            </select>
+            <textarea name="message" rows="4" placeholder="Write something..." required></textarea>
+            <input type="submit" id="sub" value="Submit">
+        </form>
+    </div>
+
+    <script>
+        let form = document.querySelector("form");
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            document.querySelector("#sub").value = "Submitting..";
+
+            let data = new FormData(form);
+
+            fetch('https://script.google.com/macros/s/AKfycbyMY9Cos6DgHFEgwTtMzVsBmsIpNrJta7w0s21IdpJB3OIAE1QATQjGWKaHOPVEC9F9/exec', {
+                method: "POST",
+                body: data
+            })
+            .then(res => res.text())
+            .then(data => {
+                document.querySelector("#msg").innerHTML = data;
+                document.querySelector("#sub").value = "Submit";
+
+                // Redirect to job referral site after a slight delay to allow user to read success message
+                setTimeout(() => {
+                    window.location.href = "https://jobreferral.club";
+                }, 2000); // Redirect after 2 seconds
+            });
+        });
+    </script>
+</body>
+
+</html>
